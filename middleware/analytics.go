@@ -3,20 +3,14 @@ package middleware
 import (
 	"errors"
 	"net/http"
+
+	"golang.org/x/net/context"
 )
 
 var (
 	ErrInvalidID    = errors.New("Invalid Id")
 	ErrInvalidEmail = errors.New("Invalid Email")
 )
-
-func CreateLogger(section string) {
-
-}
-
-func Time() {
-
-}
 
 func Recover(next http.HandlerFunc) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -35,4 +29,13 @@ func Recover(next http.HandlerFunc) http.Handler {
 		}()
 		next.ServeHTTP(w, r)
 	})
+}
+
+// PassContext is used to pass values between middleware.
+type PassContext func(ctx context.Context, w http.ResponseWriter, r *http.Request)
+
+// ServeHTTP satisies the http.Handler interface.
+func (fn PassContext) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	ctx := context.WithValue(context.Background(), "foo", "bar")
+	fn(ctx, w, r)
 }
