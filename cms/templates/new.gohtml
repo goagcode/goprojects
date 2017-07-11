@@ -1,0 +1,20 @@
+{{ define "new" }}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+    </head>
+    <body>
+        <form action="new" method="post">
+            <input type="text" name="title" placeholder="Title" /> <br />
+            Content <br />
+            <textare type="text" name="content"></textare> <br />
+            <input type="radio" name="content-type" value="page" checked/>Page
+            <input type="radio" name="content-type" value="post" /> Post
+            <br />
+            <input type="submit" value="Submit" />
+        </form>
+    </body>
+    </html>
+{{ end }}

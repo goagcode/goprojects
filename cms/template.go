@@ -22,5 +22,7 @@ type Post struct {
 }
 
 type Comment struct {
-	Content string
+	Author        string
+	Comment       string
+	DatePublished time.Time
 }
