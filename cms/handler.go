@@ -51,10 +51,16 @@ func HandleNew(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
 
 		if contentType == "page" {
-			Tmpl.ExecuteTemplate(w, "page", &Page{
+			p := &Page{
 				Title:   title,
 				Content: content,
-			})
+			}
+			_, err := CreatePage(p)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			Tmpl.ExecuteTemplate(w, "page", p)
 			return
 		}
 

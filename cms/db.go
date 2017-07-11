@@ -1,6 +1,12 @@
 package cms
 
-import "database/sql"
+import (
+	"database/sql"
+
+	_ "github.com/lib/pq"
+)
+
+var store = newDB()
 
 type PgStore struct {
 	DB *sql.DB
@@ -15,4 +21,12 @@ func newDB() *PgStore {
 	return &PgStore{
 		DB: db,
 	}
+}
+
+func CreatePage(p *Page) (int, error) {
+	var id int
+	err := store.DB.QueryRow(
+		"INSERT INTO page(title, content) VALUES($1, $2) RETURNING id",
+		p.Title, p.Content).Scan(&id)
+	return id, err
 }
