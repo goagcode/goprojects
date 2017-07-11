@@ -6,6 +6,7 @@
 package users
 
 import (
+	"errors"
 	"sync"
 
 	"golang.org/x/crypto/bcrypt"
@@ -15,6 +16,10 @@ type Store struct {
 	rwm *sync.RWMutex
 	m   map[string]string
 }
+
+var ErrUserAlreadyExists = errors.New("User already exists")
+
+var DB = newDB()
 
 // newDB is a convenience method to initalize our in memory DB when our program
 // starts.
