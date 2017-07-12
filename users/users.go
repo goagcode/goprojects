@@ -63,6 +63,19 @@ func AuthenticateUser(username, password string) error {
 	return err
 }
 
+// OverrideOldPassword overrides the old password with the new password. For
+// use when resetting passwords.
+func OverrideOldPassword(username, password string) error {
+	DB.rwm.Lock()
+	defer DB.rwm.Unlock()
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	DB.m[username] = string(hashedPassword)
+	return nil
+}
+
 // exists is an internal utility function for ensuring the username are unique.
 func exists(username string) error {
 	DB.rwm.RLock()
