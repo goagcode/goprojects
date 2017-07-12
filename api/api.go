@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -40,5 +41,22 @@ func GetPage(w http.ResponseWriter, r *http.Request) {
 		errJSON(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	writeJSON(data)
+	writeJSON(w, data)
+}
+
+// CreatePage creates a new post or page
+func CreatePage(w http.ResponseWriter, r *http.Request) {
+	page := new(cms.Page)
+	if data, err := ioutil.ReadAll(r.Body); err != nil {
+		errJSON(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	json.Unmarshal(data, page)
+	if id, err := cms.CreatePage(page); err != nil {
+		errJSON(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	writeJSON(w, map[string]int{
+		"user_id": id,
+	})
 }
