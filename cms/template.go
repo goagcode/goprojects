@@ -2,11 +2,14 @@ package cms
 
 import (
 	"html/template"
+	"os"
 	"time"
 )
 
+var tmplPath = os.Getenv("GOPATH") + "/src/goprojects/cms"
+
 // Tmpl is an exported variable
-var Tmpl = template.Must(template.ParseGlob("../templates/*"))
+var Tmpl = template.Must(template.ParseGlob(tmplPath))
 
 type Page struct {
 	Title   string
