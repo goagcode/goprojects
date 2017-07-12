@@ -2,7 +2,10 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 // AllPages returns all pages
@@ -21,4 +24,21 @@ func writeJSON(w http.ResponseWriter, data interface{}) {
 		errJSON(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.Write(resJSON)
+}
+
+func errJSON(w http.ResponseWriter, err string, status int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	w.Write([]byte(fmt.Sprintf("{ error: %s }", err)))
+}
+
+// GetPage gets a single page from the API
+func GetPage(w http.ResponseWriter, r *http.Request) {
+	pageId := mux.Vars()["pageId"]
+	data, err := cms.GetPage(pageId)
+	if err != nil {
+		errJSON(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	writeJSON(data)
 }
