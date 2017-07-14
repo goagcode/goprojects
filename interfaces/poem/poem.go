@@ -23,3 +23,21 @@ func NewPoem(ps PoemStorage) *Poem {
 		storage: ps,
 	}
 }
+
+// Save simply calls Save on the interface type. The Poem object neither
+// knows nor cares about which actual storage object receives this method
+// call.
+func (p *Poem) Save(name string) {
+	p.storage.Save(name, p.content)
+}
+
+// Load also invokes the injected storage object object without knowing it.
+func (p *Poem) Load(name string) {
+	p.content = p.storage.Load(name)
+}
+
+// String makes Poem a Sringer, allowing us to drop it anywhere string
+// would be expected.
+func (p *Poem) String() string {
+	return string(p.content)
+}
