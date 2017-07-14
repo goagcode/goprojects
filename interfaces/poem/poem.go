@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 // A Poem contains some poetry and an abstract storage reference.
 type Poem struct {
 	content []byte
@@ -40,4 +42,70 @@ func (p *Poem) Load(name string) {
 // would be expected.
 func (p *Poem) String() string {
 	return string(p.content)
+}
+
+// A Notebook is the classic storage device of a poet
+type Notebook struct {
+	poems map[string][]byte
+}
+
+func NewNoteBook() *Notebook {
+	return &Notebook{
+		poems: map[string][]byte{},
+	}
+}
+
+func (n *Notebook) Save(name string, contents []byte) {
+	n.poems[name] = contents
+}
+
+func (n *Notebook) Load(name string) []byte {
+	return n.poems[name]
+}
+
+func (n *Notebook) Type() string {
+	return "Notebook"
+}
+
+// A Napkin is the emergecy storage device of a poet. It can storage only
+// one poem.
+type Napkin struct {
+	poem []byte
+}
+
+func NewNapkin() *Napkin {
+	return &Napkin{
+		poem: []byte{},
+	}
+}
+
+func (n *Napkin) Save(name string, contents []byte) {
+	n.poem = contents
+}
+
+func (n *Napkin) Load(name string) []byte {
+	return n.poem
+}
+
+func (n *Napkin) Type() string {
+	return "Napkip"
+}
+
+func main() {
+	notebook := NewNoteBook()
+	napkip := NewNapkin()
+
+	poem := NewPoem(notebook)
+	poem.Save("My first poem")
+
+	poem = NewPoem(notebook)
+	poem.Load("My first poem")
+	fmt.Println(poem)
+
+	poem = NewPoem(napkip)
+
+	poem.Save("My second poem")
+	poem = NewPoem(napkip)
+	poem.Load("My second poem")
+	fmt.Println(poem)
 }
