@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 )
 
 type ReleaseInfo struct {
@@ -31,6 +32,18 @@ func getLatestReleaseTag(repo string) (string, error) {
 	return tag, nil
 }
 
+func getReleaseTagMessage(repo string) (string, error) {
+	tag, err := getLatestReleaseTag(repo)
+	if err != nil {
+		return "", fmt.Errorf("Error querying Github API: %s", err)
+	}
+	return fmt.Sprintf("The latest release is %s", tag), nil
+}
+
 func main() {
-	fmt.Println("Hello release")
+	msg, err := getReleaseTagMessage("/docker/machine")
+	if err != nil {
+		fmt.Println(os.Stderr, msg)
+	}
+	fmt.Println(msg)
 }
