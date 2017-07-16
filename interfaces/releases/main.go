@@ -13,8 +13,14 @@ type ReleaseInfo struct {
 	TagName string `json:"tag_name"`
 }
 
-func getLatestReleaseTag(repo string) (string, error) {
-	apiUrl, err := fmt.Sprintf("https://api.github.com/repos/%s/releases", repo)
+type ReleaseInfoer interface {
+	GetLatestReleaseTag(string) (string, error)
+}
+
+type GithubReleaseInfoer struct{}
+
+func (gh GithubReleaseInfoer) GetLatestReleaseTag(repo string) (string, error) {
+	apiUrl := fmt.Sprintf("https://api.github.com/repos/%s/releases", repo)
 	response, err := http.Get(apiUrl)
 	if err != nil {
 		return "", err
@@ -32,8 +38,8 @@ func getLatestReleaseTag(repo string) (string, error) {
 	return tag, nil
 }
 
-func getReleaseTagMessage(repo string) (string, error) {
-	tag, err := getLatestReleaseTag(repo)
+func getReleaseTagMessage(ri ReleaseInfoer, repo string) (string, error) {
+	tag, err := ri.GetLatestReleaseTag(repo)
 	if err != nil {
 		return "", fmt.Errorf("Error querying Github API: %s", err)
 	}
@@ -41,9 +47,12 @@ func getReleaseTagMessage(repo string) (string, error) {
 }
 
 func main() {
-	msg, err := getReleaseTagMessage("/docker/machine")
+	gh := GithubReleaseInfoer{}
+
+	msg, err := getReleaseTagMessage(gh, "docker/machine")
 	if err != nil {
 		fmt.Println(os.Stderr, msg)
+		os.Exit(1)
 	}
 	fmt.Println(msg)
 }
