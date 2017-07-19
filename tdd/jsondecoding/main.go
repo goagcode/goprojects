@@ -9,7 +9,7 @@ import (
 type Post struct {
 	Id       int       `json:"id"`
 	Content  string    `json:"content"`
-	Author   string    `json:"author"`
+	Author   Author    `json:"author"`
 	Comments []Comment `json:"comments"`
 }
 
@@ -41,8 +41,10 @@ func decode(filename string) (post Post, err error) {
 }
 
 func main() {
-	_, err := decode("post.json")
+	post, err := decode("post.json")
 	if err != nil {
 		fmt.Println("Error: ", err)
+	} else {
+		fmt.Println(post)
 	}
 }
