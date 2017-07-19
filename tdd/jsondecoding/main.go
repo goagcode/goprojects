@@ -42,9 +42,9 @@ func decode(filename string) (post Post, err error) {
 }
 
 func unmarshal(filename string) (post Post, err error) {
-	jsonFile, err := os.Open(filenam)
+	jsonFile, err := os.Open(filename)
 	if err != nil {
-		fmt.Println("Error opening JSON file: ", errr)
+		fmt.Println("Error opening JSON file: ", err)
 		return
 	}
 	defer jsonFile.Close()
