@@ -4,36 +4,21 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"strings"
 	"testing"
 
 	"github.com/gorilla/mux"
 )
 
-var router *mux.Router
-
-func TestMain(m *testing.M) {
-	setUp()
-	code := m.Run()
-	os.Exit(code)
-}
-
-func setUp() {
-	router = mux.NewRouter()
-}
-
 func TestHandlerOrders(t *testing.T) {
 	// Create a multiplexer to run test on
-	// mux := mux.NewRouter()
-	// Attaches handler you want to test
-	router.HandleFunc("/orders", handlerOrders).Methods("GET")
-
+	router := mux.NewRouter()
 	// Captures return HTTP response
 	w := httptest.NewRecorder()
+	// Attaches handler you want to test
+	router.HandleFunc("/orders", handlerOrders).Methods("GET")
 	// Creates request to handler you want to test
 	r, _ := http.NewRequest("GET", "/orders", nil)
-
 	// Send request to tested handler
 	router.ServeHTTP(w, r)
 
@@ -50,8 +35,8 @@ func TestHandlerOrders(t *testing.T) {
 }
 
 func TestHandlerPutOrder(t *testing.T) {
+	router := mux.NewRouter()
 	router.HandleFunc("/orders", handlerUpdateOrder).Methods("PUT")
-
 	w := httptest.NewRecorder()
 	order := strings.NewReader(`{
 		"client": "Luis Angel"
