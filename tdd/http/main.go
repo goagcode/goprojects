@@ -30,7 +30,7 @@ func main() {
 }
 
 func handlerOrders(w http.ResponseWriter, r *http.Request) {
-	orderRes, err := json.Marshal(order)
+	orderRes, err := json.Marshal(createNewOrder())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -38,6 +38,10 @@ func handlerOrders(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(orderRes)
+}
+
+func handlerUpdateOrder(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func createNewOrder() Order {
