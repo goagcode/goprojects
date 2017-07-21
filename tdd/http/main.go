@@ -7,6 +7,10 @@ import (
 	"github.com/gorilla/mux"
 )
 
+type Orderer interface {
+	Get() ([]Order, error)
+}
+
 type Order struct {
 	Id       int       `json:"id"`
 	Products []Product `json:"product"`
@@ -19,25 +23,32 @@ type Product struct {
 	Price float32 `json:"price"`
 }
 
+func (o Order) Get() ([]Order, error) {
+	return []Order{}, nil
+}
+
 var order Order
 
 func main() {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/orders", handlerOrders)
+	router.HandleFunc("/orders", handlerOrders(&Order{}))
 
 	http.ListenAndServe(":8000", router)
 }
 
-func handlerOrders(w http.ResponseWriter, r *http.Request) {
-	orderRes, err := json.Marshal(createNewOrder())
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+func handlerOrders(order Orderer) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		orderData, _ := order.Get()
+		orderRes, err := json.Marshal(orderData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(orderRes)
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(orderRes)
 }
 
 func handlerUpdateOrder(w http.ResponseWriter, r *http.Request) {

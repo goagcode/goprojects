@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -10,13 +9,21 @@ import (
 	"github.com/gorilla/mux"
 )
 
+type FakeOrder struct {
+	Orders []Order
+}
+
+func (fo FakeOrder) Get() ([]Order, error) {
+	return fo.Orders, nil
+}
+
 func TestHandlerOrders(t *testing.T) {
 	// Create a multiplexer to run test on
 	router := mux.NewRouter()
 	// Captures return HTTP response
 	w := httptest.NewRecorder()
 	// Attaches handler you want to test
-	router.HandleFunc("/orders", handlerOrders).Methods("GET")
+	router.HandleFunc("/orders", handlerOrders(&FakeOrder{})).Methods("GET")
 	// Creates request to handler you want to test
 	r, _ := http.NewRequest("GET", "/orders", nil)
 	// Send request to tested handler
@@ -25,12 +32,6 @@ func TestHandlerOrders(t *testing.T) {
 	// Check ResponseWriter for results
 	if w.Code != 200 {
 		t.Errorf("Response code is %v", w.Code)
-	}
-
-	var order Order
-	json.Unmarshal(w.Body.Bytes(), &order)
-	if order.Id != 1 {
-		t.Errorf("Cannot retrieve JSON order")
 	}
 }
 
