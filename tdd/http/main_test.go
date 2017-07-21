@@ -4,17 +4,30 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
 	"github.com/gorilla/mux"
 )
 
+var router *mux.Router
+
+func TestMain(m *testing.M) {
+	setUp()
+	code := m.Run()
+	os.Exit(code)
+}
+
+func setUp() {
+	router = mux.NewRouter()
+}
+
 func TestHandlerOrders(t *testing.T) {
 	// Create a multiplexer to run test on
-	mux := mux.NewRouter()
+	// mux := mux.NewRouter()
 	// Attaches handler you want to test
-	mux.HandleFunc("/orders", handlerOrders)
+	router.HandleFunc("/orders", handlerOrders).Methods("GET")
 
 	// Captures return HTTP response
 	w := httptest.NewRecorder()
@@ -22,7 +35,7 @@ func TestHandlerOrders(t *testing.T) {
 	r, _ := http.NewRequest("GET", "/orders", nil)
 
 	// Send request to tested handler
-	mux.ServeHTTP(w, r)
+	router.ServeHTTP(w, r)
 
 	// Check ResponseWriter for results
 	if w.Code != 200 {
@@ -37,8 +50,7 @@ func TestHandlerOrders(t *testing.T) {
 }
 
 func TestHandlerPutOrder(t *testing.T) {
-	mux := mux.NewRouter()
-	mux.HandleFunc("/orders", handlerUpdateOrder).Methods("PUT")
+	router.HandleFunc("/orders", handlerUpdateOrder).Methods("PUT")
 
 	w := httptest.NewRecorder()
 	order := strings.NewReader(`{
@@ -46,7 +58,7 @@ func TestHandlerPutOrder(t *testing.T) {
 	}`)
 	r, _ := http.NewRequest("PUT", "/orders", order)
 
-	mux.ServeHTTP(w, r)
+	router.ServeHTTP(w, r)
 
 	if w.Code != 204 {
 		t.Errorf("Status code expected 204 but got %v", w.Code)
