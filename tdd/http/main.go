@@ -32,12 +32,12 @@ var order Order
 func main() {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/orders", handlerOrders(&Order{}))
+	router.HandleFunc("/orders", HandlerOrders(&Order{}))
 
 	http.ListenAndServe(":8000", router)
 }
 
-func handlerOrders(order Orderer) http.HandlerFunc {
+func HandlerOrders(order Orderer) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		orderData, _ := order.Get()
 		orderRes, err := json.Marshal(orderData)
