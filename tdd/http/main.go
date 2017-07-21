@@ -51,7 +51,7 @@ func HandlerOrders(order Orderer) http.HandlerFunc {
 	}
 }
 
-func handlerUpdateOrder(w http.ResponseWriter, r *http.Request) {
+func HandlerUpdateOrder(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
