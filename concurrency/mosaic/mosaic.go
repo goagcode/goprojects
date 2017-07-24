@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	"io/ioutil"
+	"os"
 )
 
 func averageColor(img image.Image) [3]float64 {
@@ -30,6 +32,29 @@ func rezise(in image.Image, newWith int) image.NRGBA {
 		}
 	}
 	return *out
+}
+
+func tilesDB() map[string][3]float64 {
+	fmt.Println("Start populating tiles DB ...")
+	db := make(map[string][3]float64)
+	files, _ := ioutil.ReadDir("tiles")
+	for _, f := range files {
+		name := "tiles/" + f.Name()
+		file, err := os.Open(name)
+		if err == nil {
+			img, _, err := image.Decode(file)
+			if err == nil {
+				db[name] = averageColor(img)
+			} else {
+				fmt.Println("error in populating TILEDB: ", err, name)
+			}
+		} else {
+			fmt.Println("cannot open file", name, err)
+		}
+		file.Close()
+	}
+	fmt.Println("Finished populating tiles DB.")
+	return db
 }
 
 func main() {
