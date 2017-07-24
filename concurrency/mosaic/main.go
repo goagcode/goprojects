@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 )
 
@@ -21,4 +22,9 @@ func main() {
 	TILESDB = tilesDB()
 	fmt.Println("Mosaic server started.")
 	server.ListenAndServe()
+}
+
+func upload(w http.ResponseWriter, r *http.Request) {
+	t, _ := template.ParseFiles("upload.html")
+	t.Execute(w, nil)
 }
