@@ -57,6 +57,19 @@ func tilesDB() map[string][3]float64 {
 	return db
 }
 
+func nearest(target [3]float64, db *map[string][3]float64) string {
+	var filename string
+	smallest := 1000000.0
+	for k, v := range *db {
+		dist := distance(target, v)
+		if dist < smallest {
+			filename, smallest = k, dist
+		}
+	}
+	delete(*db, filename)
+	return filename
+}
+
 func main() {
 	fmt.Println("mosaic program")
 }
