@@ -88,7 +88,3 @@ func cloneTilesDB() map[string][3]float64 {
 	}
 	return db
 }
-
-func main() {
-	fmt.Println("mosaic program")
-}
