@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/color"
 	"io/ioutil"
+	"math"
 	"os"
 )
 
@@ -68,6 +69,14 @@ func nearest(target [3]float64, db *map[string][3]float64) string {
 	}
 	delete(*db, filename)
 	return filename
+}
+
+func distance(p1 [3]float64, p2 [3]float64) float64 {
+	return math.Sqrt(sq(p2[0]-p1[0]) + sq(p2[1]-p1[1]) + sq(p2[2]-p1[2]))
+}
+
+func sq(n float64) float64 {
+	return n * n
 }
 
 func main() {
