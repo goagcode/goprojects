@@ -9,6 +9,8 @@ import (
 	"os"
 )
 
+var TILESDB map[string][3]float64
+
 func averageColor(img image.Image) [3]float64 {
 	bounds := img.Bounds()
 	r, g, b := 0.0, 0.0, 0.0
@@ -77,6 +79,14 @@ func distance(p1 [3]float64, p2 [3]float64) float64 {
 
 func sq(n float64) float64 {
 	return n * n
+}
+
+func cloneTilesDB() map[string][3]float64 {
+	db := make(map[string][3]float64)
+	for k, v := range TILESDB {
+		db[k] = v
+	}
+	return db
 }
 
 func main() {
