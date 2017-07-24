@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"image"
+	"image/color"
 )
 
 func averageColor(img image.Image) [3]float64 {
@@ -16,6 +17,19 @@ func averageColor(img image.Image) [3]float64 {
 	}
 	totalPixels := float64(bounds.Max.X * bounds.Max.Y)
 	return [3]float64{r / totalPixels, g / totalPixels, b / totalPixels}
+}
+
+func rezise(in image.Image, newWith int) image.NRGBA {
+	bounds := in.Bounds()
+	ratio := bounds.Dx() / newWith
+	out := image.NewRGBA(image.Rect(bounds.Min.X/ratio, bounds.Min.X/ratio, bounds.Max.X/ratio, bounds.Max.Y/ratio))
+	for y, j := bounds.Min.Y, bounds.Min.Y; y < bounds.Max.Y; y, j = y+radio, j+1 {
+		for x, i := bounds.Min.X, bounds.Min.X; x < bounds.Max.X; x, i := x+radio, i+1 {
+			r, g, b, a := in.At(x, y).RGBA()
+			out.SetRGBA(i, j, color.NRGBA{uint8(r >> 8), uint8(g >> 8), uint8(b >> 8), uint8(a >> 8)})
+		}
+	}
+	return *out
 }
 
 func main() {
