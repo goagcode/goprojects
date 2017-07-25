@@ -6,10 +6,8 @@ import (
 	"fmt"
 	"html/template"
 	"image"
-	"image/draw"
 	"image/jpeg"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 )
@@ -48,35 +46,14 @@ func mosaic(w http.ResponseWriter, r *http.Request) {
 	// Decodes uploaded target image
 	original, _, _ := image.Decode(file)
 	bounds := original.Bounds()
-
-	newImage := image.NewRGBA(image.Rect(bounds.Min.X, bounds.Min.X, bounds.Max.X, bounds.Max.Y))
 	// Clones tile database
 	db := cloneTilesDB()
-	// Set up source point for each tile
-	sp := image.Point{0, 0}
-	// Iterates through target image
-	for y := bounds.Min.Y; y < bounds.Max.Y; y = y + tileSize {
-		for x := bounds.Min.x; x < bounds.Max.X; x + tileSize {
-			r, g, b, _ := original.At(x, y).RGBA()
-			color := [3]float64{float64(r), float64(g), float64(b)}
-			nearest := nearest(color, &db)
-			file, err := os.Open(nearest)
-			if err == nil {
-				img, _, err := image.Decode(file)
-				if err == nil {
-					t := resize(img, tileSize)
-					tile := t.SubImage(t.Bounds())
-					tileBounds := image.React(x, y, x+tileSize, y+tileSize)
-					draw.Draw(newImage, tileBounds, tile, sp, draw.Src)
-				} else {
-					fmt.Println("error: ", err, nearest)
-				}
-			} else {
-				fmt.Println("error: ", nearest)
-			}
-			file.Close()
-		}
-	}
+	// Fanning out,cutting up image for independent processing
+	c1 := cut(original, &db, tileSize, bounds.Min.X, bounds.Min.Y, bounds.Max.X/2, bounds.Max.Y/2)
+	c2 := cut(original, &db, tileSize, bounds.Min.X/2, bounds.Min.Y, bounds.Max.X, bounds.Max.Y/2)
+	c3 := cut(original, &db, tileSize, bounds.Min.X, bounds.Min.Y/2, bounds.Max.X/2, bounds.Max.Y)
+	c4 := cut(original, &db, tileSize, bounds.Min.X/2, bounds.Min.Y/2, bounds.Max.X, bounds.Max.Y)
+	c := combine(bounds, c1, c2, c3, c4)
 	// Encoding in JPEG, deliver to browser in base64 string
 	buf1 := new(bytes.Buffer)
 	jpeg.Encode(buf1, original, nil)

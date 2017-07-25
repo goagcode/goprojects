@@ -7,7 +7,28 @@ import (
 	"io/ioutil"
 	"math"
 	"os"
+	"sync"
 )
+
+type DB struct {
+	mutex *sync.Mutex
+	store map[string][3]float64
+}
+
+func (db *DB) nearest(target [3]float64) string {
+	var filename string
+	db.mutex.Lock()
+	smallest := 1000000.0
+	for k, v := range *db {
+		dist := distance(target, v)
+		if dist < smallest {
+			filename, smallest = k, dist
+		}
+	}
+	delete(*db, filename)
+	db.mutex.Unlock()
+	return filename
+}
 
 var TILESDB map[string][3]float64
 
@@ -58,19 +79,6 @@ func tilesDB() map[string][3]float64 {
 	}
 	fmt.Println("Finished populating tiles DB.")
 	return db
-}
-
-func nearest(target [3]float64, db *map[string][3]float64) string {
-	var filename string
-	smallest := 1000000.0
-	for k, v := range *db {
-		dist := distance(target, v)
-		if dist < smallest {
-			filename, smallest = k, dist
-		}
-	}
-	delete(*db, filename)
-	return filename
 }
 
 func distance(p1 [3]float64, p2 [3]float64) float64 {
