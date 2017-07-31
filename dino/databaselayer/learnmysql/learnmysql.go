@@ -23,11 +23,33 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
-
-	err = db.Ping()
-
+	// General query with argumets
+	rows, err := db.Query("SELECT * FROM animals")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Coonected to database")
+	defer rows.Close()
+	animals := []animal{}
+	for rows.Next() {
+		a := animal{}
+		err := rows.Scan(&a.Id, &a.AnimalType, &a.Nickname, &a.Zone, &a.Age)
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+		animals = append(animals, a)
+	}
+	fmt.Println(animals)
+	result, err := db.Exec("INSERT INTO animals(animal_type, nickname, zone, age) VALUES('Carnotaurus', ?, 2, 28)", "carnito")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(result.LastInsertId())
+	age := 14
+	id := 2
+	result, err := db.Exec("UPDATE animals SET age = ? where id = ?", age, id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(result.RowsAffected())
 }
