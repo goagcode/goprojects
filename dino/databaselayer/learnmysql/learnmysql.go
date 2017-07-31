@@ -8,6 +8,14 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+type animal struct {
+	Id         int
+	AnimalType string
+	Nickname   string
+	Zone       int
+	Age        int
+}
+
 func main() {
 	// connect to the database
 	db, err := sql.Open("mysql", "root:root@/dino")
