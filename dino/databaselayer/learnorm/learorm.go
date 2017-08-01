@@ -10,8 +10,7 @@ import (
 )
 
 type Animal struct {
-	// gorm.Model
-	ID         int    `gorm:"primary_key;not null;unique;AUTO_INCREMENT"`
+	gorm.Model
 	AnimalType string `gorm:"type:TEXT"`
 	Nickname   string `gorm:"type:TEXT"`
 	Zone       int    `gorm:"type:INTEGER"`
