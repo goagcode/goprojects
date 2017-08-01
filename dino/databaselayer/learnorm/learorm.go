@@ -49,4 +49,6 @@ func main() {
 	}
 
 	db.Save(&a)
+	// Update animal table filds
+	db.Table("animals").Where("nickname = ? AND zone = ?", "rex", 1).Update("age", 12)
 }
