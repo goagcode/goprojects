@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/jinzhu/gorm"
@@ -10,7 +9,7 @@ import (
 )
 
 type Animal struct {
-	//gorm.Model
+	// gorm.Model
 	ID         int    `gorm:"primary_key;not null;unique;AUTO_INCREMENT"`
 	AnimalType string `gorm:"type:TEXT"`
 	Nickname   string `gorm:"type:TEXT"`
@@ -27,5 +26,27 @@ func main() {
 
 	defer db.Close()
 
-	fmt.Println("It is ok")
+	db.Table("animals").DropTableIfExists(&Animal{})
+	db.Table("dinos").DropTableIfExists(&Animal{})
+	db.Table("animals").AutoMigrate(&Animal{})
+	db.Table("dinos").AutoMigrate(&Animal{})
+
+	a := Animal{
+		AnimalType: "Tynanousario Rex",
+		Nickname:   "rex",
+		Zone:       1,
+		Age:        11,
+	}
+
+	db.Create(&a)
+	db.Table("dinos").Create(&a)
+
+	a = Animal{
+		AnimalType: "Velociraptor",
+		Nickname:   "rapto",
+		Zone:       2,
+		Age:        15,
+	}
+
+	db.Save(&a)
 }
