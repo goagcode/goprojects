@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/jinzhu/gorm"
@@ -48,7 +49,15 @@ func main() {
 		Age:        15,
 	}
 
-	db.Save(&a)
+	db.Debug().Save(&a)
+
 	// Update animal table filds
-	db.Table("animals").Where("nickname = ? AND zone = ?", "rex", 1).Update("age", 12)
+	// UPDATE ANIMALS SET AGE = 12 WHERE NICKNAME = "rex" AND ZONE = 1
+	db.Debug().Table("animals").Where("nickname = ? AND zone = ?", "rex", 1).Update("age", 12)
+
+	// Query
+	// SELECT * FROM ANIMALS WHERE AGE > 12
+	animals := []Animal{}
+	db.Debug().Find(&animals, "age > ?", 12)
+	fmt.Println(animals)
 }
