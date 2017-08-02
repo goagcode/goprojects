@@ -4,13 +4,14 @@ import (
 	"log"
 
 	mgo "gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type Animal struct {
 	AnimalType string `bson:"animal_type"`
 	Nickname   string `bson:"nickname"`
 	Zone       int    `bson:"zone"`
-	Age        int    `bson"age"`
+	Age        int    `bson:"age"`
 }
 
 func main() {
@@ -36,7 +37,12 @@ func main() {
 			Age:        17,
 		},
 	}
-	err := animalCollection.Insert(animals...)
+	err = animalCollection.Insert(animals...)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Update Document
+	err = animalCollection.Update(bson.M{"nickname": "rex"}, bson.M{"$set": bson.M{"age": 10}})
 	if err != nil {
 		log.Fatal(err)
 	}
