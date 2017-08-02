@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	mgo "gopkg.in/mgo.v2"
@@ -52,4 +53,18 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Query
+	// age > 10 and zone in (1, 2)
+	query := bson.M{
+		"age": bson.M{
+			"$gt": 10,
+		},
+		"zone": bson.M{
+			"$in": []int{1, 2},
+		},
+	}
+	results := []Animal{}
+	animalCollection.Find(query).All(&results) //.one
+	fmt.Println(results)
 }
