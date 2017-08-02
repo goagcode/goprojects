@@ -46,4 +46,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Remove Document
+	err = animalCollection.Remove(bson.M{"nickname": "rex"})
+	if err != nil {
+		log.Fatal(err)
+	}
 }
