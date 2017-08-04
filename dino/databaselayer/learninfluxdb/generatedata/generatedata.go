@@ -28,3 +28,18 @@ func main() {
 		log.Fatal(err)
 	}
 }
+
+func queryDB(c client.Client, database, cmd string) (res []client.Result, err error) {
+	q := client.Query{
+		Command:  cmd,
+		Database: Database,
+	}
+	response, err := c.Query(q)
+	if err != nil {
+		return res, err
+	}
+	if response.Error() != nil {
+		return res, response.Error()
+	}
+	return response.Results, nil
+}
