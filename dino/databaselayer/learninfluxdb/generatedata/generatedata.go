@@ -27,6 +27,15 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	queryDB(c, "", "CREATE DATABASE"+myDB)
+	// Create a batch point object
+	bp, err := client.NewBatchPoints(client.BatchPointsConfig{
+		Database:  myDB,
+		Precision: "s",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func queryDB(c client.Client, database, cmd string) (res []client.Result, err error) {
