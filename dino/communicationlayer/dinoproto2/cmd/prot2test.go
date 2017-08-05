@@ -27,7 +27,7 @@ func main() {
 	case "s":
 		RunProto2Server()
 	case "c":
-		fmt.Println("for client")
+		RunProto2Client()
 	}
 }
 
@@ -53,4 +53,28 @@ func RunProto2Server() {
 			fmt.Println(a)
 		}(c)
 	}
+}
+
+func RunProto2Client() {
+	a := &dinoproto2.Animal{
+		Id:         proto.Int(1),
+		AnimalType: proto.String("Raptor"),
+		Nickname:   proto.String("rapto"),
+		Zone:       proto.Int(3),
+		Age:        proto.Int(20),
+	}
+	data, err := proto.Marshal(a)
+	if err != nil {
+		log.Fatal(err)
+	}
+	SendData(a)
+}
+
+func SendData(data []byte) {
+	c, err := net.Dial("tcp", "127.0.0.1:8282")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer c.Close()
+	c.Write(data)
 }
