@@ -32,6 +32,14 @@ func (handler *MongoDBHandler) GetDynoByNickname(nickname string) (Animal, error
 	return a, err
 }
 
+func (handler *MongoDBHandler) GetDynosByType(dinoType string) ([]Animal, error) {
+	s := handler.getFreshSession()
+	defer s.Close()
+	animals := []Animal{}
+	err := s.DB("dino").C("animals").Find(bson.M{"animal_type": dinoType}).All(&animals)
+	return animals, err
+}
+
 func (handler *MongoDBHandler) getFreshSession() *mgo.Session {
 	return handler.Session.Copy()
 }
