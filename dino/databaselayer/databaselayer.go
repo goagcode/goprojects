@@ -11,7 +11,7 @@ const (
 
 type DinoDBHandler interface {
 	GetAvailableDynos() ([]Animal, error)
-	GetDynoByNickanem(string) (Animal, error)
+	GetDynoByNickname(string) (Animal, error)
 	GetDynosByType(string) ([]Animal, error)
 	AddAnimal(Animal) error
 	UpdateAnimal(Animal, string) error
