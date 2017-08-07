@@ -46,6 +46,12 @@ func (handler *MongoDBHandler) AddAnimal(a Animal) error {
 	return s.DB("dino").C("animals").Insert(a)
 }
 
+func (handler *MongoDBHandler) UpdateAnimal(a Animal, nname string) error {
+	s := handler.getFreshSession()
+	defer s.Close()
+	return s.DB("dino").C("animals").Update(bson.M{"nickname": nname}, a)
+}
+
 func (handler *MongoDBHandler) getFreshSession() *mgo.Session {
 	return handler.Session.Copy()
 }
