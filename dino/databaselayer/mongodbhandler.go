@@ -40,6 +40,12 @@ func (handler *MongoDBHandler) GetDynosByType(dinoType string) ([]Animal, error)
 	return animals, err
 }
 
+func (handler *MongoDBHandler) AddAnimal(a Animal) error {
+	s := handler.getFreshSession()
+	defer s.Close()
+	return s.DB("dino").C("animals").Insert(a)
+}
+
 func (handler *MongoDBHandler) getFreshSession() *mgo.Session {
 	return handler.Session.Copy()
 }
