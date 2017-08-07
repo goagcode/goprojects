@@ -12,3 +12,15 @@ func NewMongoDBHandler(connection string) (*MongoDBHandler, error) {
 		Session: s,
 	}, err
 }
+
+func (handler *MongoDBHandler) GetAvailableDynos() ([]Animal, error) {
+	s := handler.getFreshSession()
+	defer s.Close()
+	animals := []Animal{}
+	err := s.DB("dino").C("animals").Find(nil).All(&animals)
+	return animals, err
+}
+
+func (handler *MongoDBHandler) getFreshSession() *mgo.Session {
+	return handler.Session.Copy()
+}
