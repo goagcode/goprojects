@@ -27,6 +27,20 @@ func (server *DinoGrpcServer) GetAnimal(ctx context.Context, r *Request) (*Anima
 	return convertToDinoGRPCAnimal(animal), err
 }
 
+func (server *DinoGrpcServer) GetAllAnimals(req *Request, stream DinoService_GetAllAnimalsServer) error {
+	animals, err := server.dbHandler.GetAvailableDynos()
+	if err != nil {
+		return err
+	}
+	for _, animal := range animals {
+		grpcAnimal := convertToDinoGRPCAnimal(animal)
+		if err := stream.Send(grpcAnimal); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func convertToDinoGRPCAnimal(animal databaselayer.Animal) *Animal {
 	return &Animal{
 		Id:         int32(animal.ID),
