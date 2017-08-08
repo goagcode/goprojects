@@ -1,7 +1,10 @@
 package main
 
 import (
+	"context"
 	"flag"
+	"fmt"
+	"io"
 	"log"
 	"net"
 	"strings"
@@ -45,4 +48,41 @@ func runGRPCServer() {
 	if err != grpcServer.Serve(lis); err != nil {
 		log.Fatal("Failed to serve: %v", err)
 	}
+}
+
+func runGRPCClient() {
+	conn, err := grpc.Dial("127.0.0.1:8282", grpc.WithInsecure())
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer conn.Close()
+	client := dinogrpc.NewDinoServiceClient(conn)
+	input := ""
+	fmt.Println("All animals? (y/n)")
+	fmt.Scanln(&input)
+
+	if strings.EqualFold(input, "y") {
+		animals, err := client.GetAllAnimals(context.Background(), &dinogrpc.Request{})
+		if err != nil {
+			log.Fatal(err)
+		}
+		for {
+			animal, err := animals.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				grpclog.Fatal(err)
+			}
+			grpclog.Println(animal)
+		}
+		return
+	}
+	fmt.Println("Nickname?")
+	fmt.Scanln(&input)
+	a, err := client.GetAnimal(context.Background(), &dinogrpc.Request{Nickname: input})
+	if err != nil {
+		log.Fatal(err)
+	}
+	grpclog.Println(*a)
 }
