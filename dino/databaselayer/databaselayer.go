@@ -27,7 +27,7 @@ type Animal struct {
 
 var DBTypeNotSupported = errors.New("The Database type provided is not supported...")
 
-func GetDatabaseHandler(dbtype uint8, connection string) (DinoDBHandler, error) {
+func GetDataBaseHandler(dbtype uint8, connection string) (DinoDBHandler, error) {
 	switch dbtype {
 	case MONGODB:
 		return NewMongoDBHandler(connection)
