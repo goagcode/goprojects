@@ -1,8 +1,11 @@
 package main
 
 import (
-	"fmt"
+	"log"
+	"net"
 	"strings"
+
+	"google.golang.org/grpc"
 
 	pb "github.com/miguellgt/goprojects/grpc/customer"
 	"golang.org/x/net/context"
@@ -37,5 +40,12 @@ func (s *server) GetCustomers(filter *pb.CustomerFilter, stream pb.Customer_GetC
 }
 
 func main() {
-	fmt.Println("Hello grpc")
+	lis, err := net.Listen("tcp", port)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	// Create a new gRPC server
+	server := grpc.NewServer()
+	pb.RegisterCustomerServer(server, &server{})
+	server.Serve(lis)
 }
