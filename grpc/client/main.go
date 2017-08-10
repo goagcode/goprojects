@@ -2,9 +2,10 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"log"
+
+	"google.golang.org/grpc"
 
 	pb "github.com/miguellgt/goprojects/grpc/customer"
 )
@@ -44,5 +45,35 @@ func getCustomers(client pb.CustomerClient, filter *pb.CustomerFilter) {
 }
 
 func main() {
-	fmt.Println("Hello")
+	// Set up a connection to the gRPC server.
+	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("dial not connect: %v", err)
+	}
+	defer conn.Close()
+	// Create a new CustomerClient
+	client := pb.NewCustomerClient(conn)
+
+	customer := &pb.CustomerRequest{
+		Id:    101,
+		Name:  "Miguel Angel Galicia",
+		Email: "miguel@nakva.mx",
+		Phone: "443493849",
+		Addresses: []*pb.CustomerRequest_Address{
+			&pb.CustomerRequest_Address{
+				Street:            "1 Mission Street",
+				City:              "San Francisco",
+				State:             "CA",
+				Zip:               "94105",
+				IsShippingAddress: false,
+			},
+		},
+	}
+
+	// Create a new customer
+	createCustomer(client, customer)
+
+	// Filter with an empty Keyword
+	filter := &pb.CustomerFilter{Keyword: ""}
+	getCustomers(client, filter)
 }
