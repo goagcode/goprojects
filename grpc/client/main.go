@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 
 	pb "github.com/miguellgt/goprojects/grpc/customer"
@@ -20,6 +21,25 @@ func createCustomer(client pb.CustomerClient, customer *pb.CustomerRequest) {
 	}
 	if resp.Success {
 		log.Println("A new Customer has been added with id: %d", resp.Id)
+	}
+}
+
+// getCustomers calls the RPC method GetCustomers of CustomerServer
+func getCustomers(client pb.CustomerClient, filter *pb.CustomerFilter) {
+	// Calling the straming API
+	stream, err := client.GetCustomers(context.Background(), filter)
+	if err != nil {
+		log.Fatalf("Error on get customers: %v", err)
+	}
+	for {
+		customer, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatalf("%v.GetCustomers(_) = _,", client, err)
+		}
+		log.Printf("Customer: %v", customer)
 	}
 }
 
