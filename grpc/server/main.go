@@ -45,7 +45,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	// Create a new gRPC server
-	server := grpc.NewServer()
-	pb.RegisterCustomerServer(server, &server{})
-	server.Serve(lis)
+	s := grpc.NewServer()
+	pb.RegisterCustomerServer(s, &server{})
+	s.Serve(lis)
 }

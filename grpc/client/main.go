@@ -59,7 +59,7 @@ func main() {
 		Name:  "Miguel Angel Galicia",
 		Email: "miguel@nakva.mx",
 		Phone: "443493849",
-		Addresses: []*pb.CustomerRequest_Address{
+		Address: []*pb.CustomerRequest_Address{
 			&pb.CustomerRequest_Address{
 				Street:            "1 Mission Street",
 				City:              "San Francisco",
