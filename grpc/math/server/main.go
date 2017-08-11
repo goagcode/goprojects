@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"net"
+	"os"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -23,5 +25,13 @@ func (m *mathServer) Divide(ctx context.Context, in *ms.Operands) (*ms.Result, e
 }
 
 func main() {
-	fmt.Println("Running tcp server")
+	listener, err := net.Listen("tcp", ":50051")
+	if err != nil {
+		fmt.Println("Could not listen on 50051")
+		os.Exit(-1)
+	}
+	// new server, register, and serve
+	server := grpc.NewServer()
+	ms.RegisterMathServer(server, mathServer{})
+	server.Serve(listener)
 }
