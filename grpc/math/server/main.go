@@ -15,9 +15,9 @@ import (
 
 type mathServer struct{}
 
-func (m *mathServer) Divide(ctx context.Context, in *ms.Operands) (*ms.Result, error) {
+func (m mathServer) Divide(ctx context.Context, in *ms.Operands) (*ms.Result, error) {
 	// Handle divide by zero
-	if in.Dividend == 0 {
+	if in.Divisor == 0 {
 		return nil, grpc.Errorf(codes.InvalidArgument, "Cannot divide by zero")
 	}
 	// cast, divide, return
