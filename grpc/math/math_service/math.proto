@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package math_service;
+
 service Math {
     rpc Divide (Operands) returns (Result) {}
 }
