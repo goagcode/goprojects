@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package math_service;
+
+service Math {
+    rpc Divide (Operands) returns (Result) {}
+}
+
+// A message with numeric operands for a math operation
+message Operands {
+    int32 dividend = 1;
+    int32 divisor = 2;
+}
+
+// A message with numerical results from a math operation
+message Result {
+    float quotient = 1;
+}
