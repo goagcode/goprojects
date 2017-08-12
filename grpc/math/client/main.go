@@ -12,12 +12,12 @@ import (
 )
 
 func main() {
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial("192.168.99.100:50051", grpc.WithInsecure())
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(-1)
 	}
-
+	defer conn.Close()
 	client := math_service.NewMathClient(conn)
 	fmt.Println("Valid Request: 10/4")
 	result, err := client.Divide(context.Background(), &math_service.Operands{
