@@ -1,17 +1,29 @@
 syntax = "proto3";
 
+package helloworld_service;
+
 // The greeting service definition
 service Greeting {
-    // Sends a greeting
+    // Sends a greeting. Service, unary request/response
     rpc SayHello(HelloRequest) returns (HelloResponse) {}
+}
+
+enum Sentiment {
+    HAPPY = 0;
+    SLEEPY = 1;
+    ANGRY = 2;
 }
 
 // The request message containing the user's name.
 message HelloRequest {
     string name = 1;
+    int32 age = 2;
+    repeated string hobbies = 3;
+    map<string, string> bagOfTricks = 4;
+    Sentiment sentiment = 5;
 }
 
 // The response message containing the greetings.
 message HelloResponse {
-    string message  = 1;
+    string greeting = 1;
 }
