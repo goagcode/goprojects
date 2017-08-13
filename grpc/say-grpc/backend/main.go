@@ -43,7 +43,7 @@ func (server) Say(ctx context.Context, in *pb.Text) (*pb.Speech, error) {
 		return nil, fmt.Errorf("could not close tmp file %s: %v", f.Name(), err)
 	}
 
-	cmd := exec.Command("flite", "-t", text.Text, "-o", f.Name())
+	cmd := exec.Command("flite", "-t", in.Text, "-o", f.Name())
 	if data, err := cmd.CombinedOutput(); err != nil {
 		return nil, fmt.Errorf("flite failed: %s", data)
 	}
