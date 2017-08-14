@@ -15,3 +15,17 @@ spec:
               image: gcr.io/go-grpc/say
               ports:
               - containerPort: 8080
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+    name: say-service
+spec:
+    selector:
+        app: say
+    ports:
+        - protocol: TCP
+          port: 8080
+    type: LoadBalancer
