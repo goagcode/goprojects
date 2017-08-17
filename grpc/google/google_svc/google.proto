@@ -1,10 +1,12 @@
 syntax = "proto3";
 
-package google_svc
+package google_svc;
 
 service Google {
     // Search returns a Google search result for the query.
     rpc Search(Request) returns (Result) {}
+    // Watch returns a stream of Google search results for the query
+    rpc Watch(Request) returns (stream Result) {}
 }
 
 message Request {
