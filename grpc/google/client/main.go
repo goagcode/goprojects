@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	server := flag.String("s", ":8080", "address to grpc server")
+	server := flag.String("s", "localhost:3030", "address to grpc server")
 	query := flag.String("q", "gRPC framework", "query to search int the google search")
 	mode := flag.String("m", "search", "mode to use the service")
 
@@ -32,15 +32,15 @@ func main() {
 	switch *mode {
 	case "search":
 		search(client, *query)
-	case "watch":
-		watch(client, *query)
+	// case "watch":
+	// 	watch(client, *query)
 	default:
 		log.Fatalf("Unknown mode: %q", *mode)
 	}
 }
 
 func search(client pb.GoogleClient, query string) {
-	ctx, cancel := context.WithTimeout(contect.Background(), 80*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), 80*time.Millisecond)
 	defer cancel()
 
 	req := &pb.Request{Query: query}
