@@ -44,3 +44,22 @@ func logSleep(ctx context.Context, d time.Duration) {
 		tr.LazyPrintf("sleeping for %s", d)
 	}
 }
+
+func watch(req *pb.Request, stream pb.Google_WatchServer) error {
+	ctx := stream.Context()
+	for i := 0; ; i++ {
+		d := randomDuration(1 * time.Second)
+		logSleep(ctx, d)
+		select {
+		case <-time.After(d):
+			err := stream.Send(&pb.Result{
+				Title: fmt.Sprintf("result %d for [%s] from backend %d", i, req.Query, *index),
+			})
+			if err != nil {
+				return err
+			}
+		case <-ctx.Done():
+			return ctx.Err()
+		}
+	}
+}
