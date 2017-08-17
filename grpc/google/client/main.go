@@ -2,9 +2,12 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
+	"time"
 
 	pb "github.com/miguellgt/goprojects/grpc/google/google_svc"
+	context "golang.org/x/net/context"
 
 	"google.golang.org/grpc"
 )
@@ -34,4 +37,18 @@ func main() {
 	default:
 		log.Fatalf("Unknown mode: %q", *mode)
 	}
+}
+
+func search(client pb.GoogleClient, query string) {
+	ctx, cancel := context.WithTimeout(contect.Background(), 80*time.Millisecond)
+	defer cancel()
+
+	req := &pb.Request{Query: query}
+	res, err := client.Search(ctx, req)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(res)
 }
