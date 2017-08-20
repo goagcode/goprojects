@@ -21,6 +21,7 @@ func (*server) SayHello(ctx context.Context, req *pb.Request) (*pb.Response, err
 }
 
 func (*server) SayHelloStream(req *pb.Request, stream pb.Greeter_SayHelloStreamServer) error {
+	log.Println(req)
 	for {
 		res := &pb.Response{Message: "Hello " + req.GetName()}
 		err := stream.Send(res)
