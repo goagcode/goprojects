@@ -1,0 +1,16 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+    name: hellokube-grpc
+spec:
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: hellokube-grpc
+        spec:
+            containers:
+            - name: hellokube-grpc
+              image: gcr.io/ntrack-nonap/grpc-server
+              ports:
+              - containerPort: 3030
